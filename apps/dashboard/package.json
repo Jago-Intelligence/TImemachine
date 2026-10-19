@@ -15,7 +15,7 @@
     "@timemachine/core": "workspace:*",
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react-dom": "19.3.1",
     "server-only": "0.0.1",
     "tailwindcss": "4.3.3",
     "@tailwindcss/postcss": "4.3.3",
