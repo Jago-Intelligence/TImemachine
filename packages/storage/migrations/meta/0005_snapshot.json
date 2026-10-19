@@ -1,0 +1,451 @@
+{
+  "id": "38ea78f1-3b70-4153-b600-01fe399107f6",
+  "prevId": "7d332285-bfaa-44b1-9a0b-5e8503fbc524",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.timemachine_alert_outbox": {
+      "name": "timemachine_alert_outbox",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(96)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "due_at": {
+          "name": "due_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "lease": {
+          "name": "lease",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '7 days'"
+        }
+      },
+      "indexes": {
+        "timemachine_alert_due_idx": {
+          "name": "timemachine_alert_due_idx",
+          "columns": [
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "timemachine_alert_attempts_check": {
+          "name": "timemachine_alert_attempts_check",
+          "value": "\"timemachine_alert_outbox\".\"attempts\" BETWEEN 0 AND 5"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.timemachine_incidents": {
+      "name": "timemachine_incidents",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "issue_id": {
+          "name": "issue_id",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "schema_version": {
+          "name": "schema_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "service_name": {
+          "name": "service_name",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "occurred_at": {
+          "name": "occurred_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "replay_fixture": {
+          "name": "replay_fixture",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "timemachine_incidents_issue_idx": {
+          "name": "timemachine_incidents_issue_idx",
+          "columns": [
+            {
+              "expression": "issue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "occurred_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_incidents_list_idx": {
+          "name": "timemachine_incidents_list_idx",
+          "columns": [
+            {
+              "expression": "occurred_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_incidents_service_list_idx": {
+          "name": "timemachine_incidents_service_list_idx",
+          "columns": [
+            {
+              "expression": "service_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "occurred_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_incidents_received_idx": {
+          "name": "timemachine_incidents_received_idx",
+          "columns": [
+            {
+              "expression": "received_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_incidents_expiry_idx": {
+          "name": "timemachine_incidents_expiry_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_incidents_service_idx": {
+          "name": "timemachine_incidents_service_idx",
+          "columns": [
+            {
+              "expression": "service_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "occurred_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "timemachine_incidents_schema_check": {
+          "name": "timemachine_incidents_schema_check",
+          "value": "\"timemachine_incidents\".\"schema_version\" = 1"
+        },
+        "timemachine_incidents_expiry_check": {
+          "name": "timemachine_incidents_expiry_check",
+          "value": "\"timemachine_incidents\".\"expires_at\" > \"timemachine_incidents\".\"received_at\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.timemachine_issue_states": {
+      "name": "timemachine_issue_states",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(64)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "revision": {
+          "name": "revision",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'open'"
+        },
+        "resolution": {
+          "name": "resolution",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "timemachine_issue_states_revision_check": {
+          "name": "timemachine_issue_states_revision_check",
+          "value": "\"timemachine_issue_states\".\"revision\" > 0"
+        },
+        "timemachine_issue_states_status_check": {
+          "name": "timemachine_issue_states_status_check",
+          "value": "\"timemachine_issue_states\".\"status\" IN ('open', 'resolved')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.timemachine_replay_runs": {
+      "name": "timemachine_replay_runs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "incident_id": {
+          "name": "incident_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slot": {
+          "name": "slot",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "timemachine_replay_history_idx": {
+          "name": "timemachine_replay_history_idx",
+          "columns": [
+            {
+              "expression": "incident_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "started_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "timemachine_replay_running_idx": {
+          "name": "timemachine_replay_running_idx",
+          "columns": [
+            {
+              "expression": "slot",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"timemachine_replay_runs\".\"status\" = 'running'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "timemachine_replay_runs_incident_id_timemachine_incidents_id_fk": {
+          "name": "timemachine_replay_runs_incident_id_timemachine_incidents_id_fk",
+          "tableFrom": "timemachine_replay_runs",
+          "tableTo": "timemachine_incidents",
+          "columnsFrom": ["incident_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "timemachine_replay_slot_check": {
+          "name": "timemachine_replay_slot_check",
+          "value": "\"timemachine_replay_runs\".\"slot\" = 1"
+        },
+        "timemachine_replay_status_check": {
+          "name": "timemachine_replay_status_check",
+          "value": "\"timemachine_replay_runs\".\"status\" IN ('running', 'reproduced', 'not-reproduced', 'failed')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

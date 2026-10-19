@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+  - packages/*
+  - examples/*
+
+allowBuilds:
+  esbuild: true
+  # Optional msgpackr accelerator; use the JavaScript fallback in local replay.
+  msgpackr-extract: false
+
+minimumReleaseAge: 1440

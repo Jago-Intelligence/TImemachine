@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" role="img" aria-labelledby="title description">
+<title id="title">TimeMachine implemented architecture</title>
+<desc id="description">The Express SDK sends incidents to the Fastify collector. Browsers use the Next.js dashboard, which calls the collector. The collector owns PostgreSQL persistence and alert delivery, reads trusted replay registry files, and runs isolated Docker replays. A build machine creates images and registry metadata. Private image backup and recovery are optional.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse"><path d="M0 0L8 4L0 8Z" fill="#276344"/></marker></defs>
+<style>text{font-family:Arial,sans-serif;fill:#17251d}.title{font-size:32px;font-weight:700}.heading{font-size:22px;font-weight:700}.body{font-size:17px}.small{font-size:15px;fill:#627269}.label{font-size:16px;fill:#276344}.boundary{fill:#fafcfb;stroke:#d6e2d9;stroke-width:1.5;stroke-dasharray:7 5}.box{fill:white;stroke:#cddad1;stroke-width:1.5}.green{fill:#eef6f0;stroke:#a8c8b2;stroke-width:1.5}.edge{fill:none;stroke:#276344;stroke-width:2;marker-end:url(#arrow)}.optional{stroke-dasharray:6 5}.both{marker-start:url(#arrow)}</style>
+<rect width="1600" height="1120" fill="white"/>
+<text x="40" y="45" class="title">TimeMachine · implemented architecture</text>
+<text x="40" y="78" class="small">Solid connections: runtime data paths · Dashed connections: build/deployment or optional backup</text>
+
+<rect x="40" y="185" width="325" height="455" rx="8" class="boundary"/>
+<text x="60" y="216" class="heading">Your application</text>
+<rect x="60" y="242" width="285" height="160" rx="6" class="green"/>
+<text x="80" y="273" class="heading">Express 5 + Node SDK</text>
+<text x="80" y="310" class="body">Automatic failure capture</text>
+<text x="80" y="339" class="body">Approved dependency evidence</text>
+<text x="80" y="374" class="small">Bounded in-memory delivery queue</text>
+<rect x="60" y="491" width="285" height="125" rx="6" class="box"/>
+<text x="80" y="525" class="heading">Application dependencies</text>
+<text x="80" y="561" class="body">HTTP · databases · queues</text>
+<text x="80" y="588" class="small">Supported operations only</text>
+<path d="M200 403V490" class="edge both"/>
+<text x="215" y="454" class="small">Live app traffic</text>
+
+<rect x="410" y="185" width="680" height="675" rx="8" class="boundary"/>
+<text x="430" y="216" class="heading">Shared workspace · your infrastructure</text>
+<rect x="450" y="104" width="295" height="55" rx="6" class="box"/>
+<text x="472" y="139" class="heading">Developer browser</text>
+<rect x="450" y="244" width="330" height="123" rx="6" class="box"/>
+<text x="472" y="278" class="heading">Next.js dashboard</text>
+<text x="472" y="312" class="body">Issues · replay · workspace · alerts</text>
+<text x="472" y="342" class="small">Server-side API requests</text>
+<path d="M610 160V243" class="edge both"/>
+<text x="624" y="181" class="label">HTTPS + session cookie</text>
+
+<rect x="450" y="455" width="590" height="158" rx="6" class="green"/>
+<text x="472" y="490" class="heading">Fastify collector</text>
+<text x="472" y="526" class="body">Auth · validation · sanitization · issue grouping</text>
+<text x="472" y="559" class="body">Replay coordinator + in-process alert worker</text>
+<text x="472" y="591" class="small">Health · rate limits · graceful shutdown</text>
+<path d="M610 368V454" class="edge both"/>
+<text x="625" y="415" class="label">Authenticated /v1 API</text>
+<path d="M346 326H389V533H449" class="edge"/>
+<text x="54" y="695" class="label">SDK → collector: POST /v1/incidents</text>
+<text x="54" y="724" class="small">Project token · HTTPS in remote deployments</text>
+
+<rect x="450" y="711" width="305" height="126" rx="6" class="box"/>
+<text x="472" y="745" class="heading">PostgreSQL · IncidentStore</text>
+<text x="472" y="777" class="body">Incidents · issues · replay runs</text>
+<text x="472" y="808" class="small">Accounts · settings · alert outbox</text>
+<path d="M600 614V710" class="edge both"/>
+<text x="615" y="667" class="label">Storage adapter / SQL</text>
+<rect x="785" y="711" width="255" height="126" rx="6" class="box"/>
+<text x="805" y="745" class="heading">Trusted registry JSON</text>
+<text x="805" y="778" class="body">Image IDs + scenario contracts</text>
+<text x="805" y="809" class="small">Optional backup digests</text>
+<path d="M912 710V614" class="edge"/>
+<text x="926" y="650" class="small">Validate</text><text x="926" y="674" class="small">and reload</text>
+
+<rect x="1140" y="244" width="420" height="123" rx="6" class="box"/>
+<text x="1162" y="278" class="heading">Alert destinations</text>
+<text x="1162" y="311" class="body">Slack · Teams · Discord · webhook</text>
+<text x="1162" y="341" class="body">Email via SMTP</text>
+<path d="M1041 489H1105V305H1139" class="edge"/>
+<text x="1158" y="402" class="label">New / reopened issues · independent retries</text>
+
+<rect x="1140" y="455" width="420" height="405" rx="8" class="boundary"/>
+<text x="1160" y="486" class="heading">Replay execution</text>
+<text x="1160" y="514" class="small">Same host or configured Docker host</text>
+<rect x="1160" y="544" width="380" height="81" rx="6" class="box"/>
+<text x="1182" y="577" class="heading">Docker engine</text>
+<text x="1182" y="606" class="small">Starts trusted image · receives JSON result</text>
+<path d="M1041 582H1159" class="edge both"/>
+<rect x="1160" y="690" width="380" height="146" rx="6" class="green"/>
+<text x="1182" y="724" class="heading">Disposable replay container</text>
+<text x="1182" y="757" class="body">App factory + controlled dependencies</text>
+<text x="1182" y="790" class="body">Optional in-container synthetic PostgreSQL</text>
+<text x="1182" y="818" class="small">No network · read-only root · non-root · limits</text>
+<path d="M1345 626V689" class="edge both"/>
+<text x="1359" y="665" class="small">stdin / stdout</text>
+
+<rect x="40" y="924" width="650" height="119" rx="6" class="box"/>
+<text x="62" y="958" class="heading">Developer / CI build machine</text>
+<text x="62" y="993" class="body">SDK CLI + replay CLI → Docker build + validated manifest</text>
+<text x="62" y="1022" class="small">Updates app artifact ID; deploy registry JSON to collector separately</text>
+<path d="M640 924V888H912V838" class="edge optional"/>
+<text x="710" y="907" class="label">Deploy trusted metadata</text>
+<rect x="970" y="924" width="590" height="119" rx="6" class="box"/>
+<text x="992" y="958" class="heading">Optional private container registry</text>
+<text x="992" y="993" class="body">Immutable image digests · Docker-managed credentials</text>
+<text x="992" y="1022" class="small">Recovery verifies restored image ID; not incident storage</text>
+<path d="M691 989H969" class="edge optional"/>
+<text x="733" y="978" class="label">Optional push</text>
+<path d="M1515 923V861H1580V586H1541" class="edge optional"/>
+<text x="1165" y="893" class="label">Optional digest pull + identity verification</text>
+<text x="40" y="1090" class="small">No separate worker service, Redis queue, AI service or test-generation package is required or implemented here.</text>
+</svg>

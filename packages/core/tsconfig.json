@@ -1,0 +1,8 @@
+{
+  "extends": "../../tooling/typescript/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

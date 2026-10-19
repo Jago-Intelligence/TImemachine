@@ -1,0 +1,34 @@
+{
+  "name": "@timemachine/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "migrations"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --exclude test/postgres.integration.test.ts",
+    "test:integration": "vitest run test/postgres.integration.test.ts",
+    "generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@timemachine/core": "workspace:*",
+    "drizzle-orm": "0.45.4",
+    "pg": "8.23.1",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.11"
+  }
+}

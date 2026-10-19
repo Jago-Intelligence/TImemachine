@@ -1,0 +1,2 @@
+CREATE INDEX "timemachine_incidents_list_idx" ON "timemachine_incidents" USING btree ("occurred_at","id");--> statement-breakpoint
+CREATE INDEX "timemachine_incidents_service_list_idx" ON "timemachine_incidents" USING btree ("service_name","occurred_at","id");

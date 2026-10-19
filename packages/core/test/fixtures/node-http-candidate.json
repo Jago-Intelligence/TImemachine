@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "id": "8b372947-b5ba-4b5f-8b84-3e53e686f014",
+  "occurredAt": "2026-10-12T20:00:00.000Z",
+  "capturedAt": "2026-10-12T20:00:00.050Z",
+  "service": {
+    "name": "example-orders",
+    "version": "0.1.0",
+    "environment": "test"
+  },
+  "runtime": {
+    "language": "typescript",
+    "name": "node",
+    "version": "24.3.0"
+  },
+  "adapter": {
+    "name": "sdk-node",
+    "version": "0.1.0",
+    "capabilities": {
+      "capture": ["http-metadata", "errors", "dependency-metadata"],
+      "replay": ["node-http-fixtures-v1"]
+    }
+  },
+  "correlation": {
+    "requestId": "req-example-1",
+    "correlationId": "corr-example-1"
+  },
+  "failure": {
+    "source": "http-handler",
+    "name": "InventoryUnavailable",
+    "code": "INVENTORY_UNAVAILABLE",
+    "summary": "The example inventory fixture returned an unavailable result.",
+    "frames": [
+      {
+        "function": "createOrder",
+        "file": "src/orders.ts",
+        "line": 42,
+        "column": 7
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "id": "event-1",
+      "offsetMs": 0,
+      "type": "http.request",
+      "method": "POST",
+      "route": "/orders"
+    },
+    {
+      "id": "event-2",
+      "offsetMs": 12,
+      "type": "dependency",
+      "dependencyId": "inventory-fixture",
+      "operation": "reserve",
+      "outcome": "failure",
+      "durationMs": 12
+    },
+    {
+      "id": "event-3",
+      "offsetMs": 13,
+      "type": "error",
+      "code": "INVENTORY_UNAVAILABLE"
+    },
+    {
+      "id": "event-4",
+      "offsetMs": 14,
+      "type": "http.response",
+      "statusCode": 503
+    }
+  ],
+  "replay": {
+    "status": "candidate",
+    "mode": "node-http-fixtures-v1",
+    "fixtureSetId": "fixture-example-orders-v1"
+  }
+}

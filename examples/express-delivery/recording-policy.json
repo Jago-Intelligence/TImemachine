@@ -1,0 +1,58 @@
+{
+  "id": "delivery-http-v1",
+  "requests": [
+    {
+      "method": "POST",
+      "route": "/delivery/quote",
+      "bodyFields": ["distanceKm"]
+    },
+    {
+      "method": "POST",
+      "route": "/delivery/zone-quote",
+      "bodyFields": ["distanceKm", "zoneCode"]
+    },
+    {
+      "method": "POST",
+      "route": "/users/register",
+      "bodyFields": ["handle"],
+      "databaseMode": "synthetic-postgres"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "pricing",
+      "method": "GET",
+      "origin": "http://127.0.0.1:4330",
+      "route": "/rates",
+      "responseFields": ["ratePerKm", "currency"],
+      "ignoredResponseHeaders": ["x-request-id"]
+    }
+  ],
+  "ignoredRequestHeaders": [
+    "origin",
+    "referer",
+    "accept-language",
+    "priority",
+    "dnt",
+    "sec-fetch-site",
+    "sec-fetch-mode",
+    "sec-fetch-dest",
+    "sec-ch-ua",
+    "sec-ch-ua-mobile",
+    "sec-ch-ua-platform",
+    "sec-gpc"
+  ],
+  "sourceEvidenceFiles": [
+    "examples/express-delivery/src/app.js",
+    "examples/express-delivery/src/database-app.js",
+    "examples/express-delivery/src/registration-app.js"
+  ],
+  "postgres": [
+    {
+      "id": "zone-rate",
+      "text": "SELECT rate_per_km, currency FROM delivery_zones WHERE zone_code = $1",
+      "parameterFields": ["zoneCode"],
+      "rowFields": ["rate_per_km", "currency"]
+    }
+  ]
+}

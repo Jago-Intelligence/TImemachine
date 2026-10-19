@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Delivery API · TimeMachine testing</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #173c31;
+        background: #f3f7f3;
+        line-height: 1.6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        max-width: 1040px;
+        margin: 48px auto;
+        padding: 0 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+      }
+      h1 {
+        font-size: 36px;
+        letter-spacing: -1px;
+        margin: 4px 0;
+      }
+      h2 {
+        font-size: 21px;
+        margin: 0 0 16px;
+      }
+      p {
+        color: #52675e;
+      }
+      small,
+      .eyebrow {
+        color: #52675e;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 12px;
+      }
+      section {
+        background: white;
+        padding: 28px;
+        border: 1px solid #dce5dc;
+        border-radius: 14px;
+        margin: 24px 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .grid section {
+        margin: 0;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+      }
+      input,
+      select {
+        display: block;
+        margin: 8px 0 18px;
+        width: 100%;
+        font: inherit;
+        padding: 12px;
+        border: 1px solid #c4d5c9;
+        border-radius: 7px;
+      }
+      button,
+      a.button {
+        display: inline-block;
+        border: 1px solid #c4d5c9;
+        border-radius: 7px;
+        padding: 11px 16px;
+        font: inherit;
+        background: #f7faf7;
+        color: #173c31;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #22674f;
+        color: white;
+        border-color: #22674f;
+      }
+      button:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      pre {
+        background: #f4f7f4;
+        padding: 16px;
+        border-radius: 8px;
+        overflow: auto;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+      }
+      code {
+        font-size: 13px;
+      }
+      #status,
+      #revision {
+        display: inline-block;
+        font-weight: 600;
+        padding: 3px 9px;
+        background: #edf3ed;
+        border-radius: 5px;
+      }
+      #status.error {
+        color: #a53226;
+        background: #fff0eb;
+      }
+      #status.success {
+        color: #22674f;
+        background: #edf7ee;
+      }
+      ol {
+        padding-left: 22px;
+      }
+      li {
+        margin: 12px 0;
+      }
+      #history {
+        max-height: 220px;
+        overflow: auto;
+        font-size: 14px;
+      }
+      .note {
+        font-size: 14px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+      @media (max-width: 700px) {
+        main {
+          margin-top: 24px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        header {
+          align-items: start;
+          flex-direction: column;
+        }
+        h1 {
+          font-size: 29px;
+        }
+        section {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <span class="eyebrow">Local Express backend · real HTTP requests</span>
+          <h1>Delivery fee playground</h1>
+          <p>Enter a distance. Capture a bug. Verify the fix.</p>
+        </div>
+        <a
+          class="button"
+          id="dashboard"
+          href="http://127.0.0.1:4321/?service=delivery-api"
+          target="_blank"
+          rel="noopener"
+          >Open TimeMachine ↗</a
+        >
+      </header>
+      <p>
+        Running backend: <span id="revision">Checking…</span> · Pricing:
+        <strong>Local $2/km · Express zone $4/km</strong>
+      </p>
+      <div class="grid">
+        <section>
+          <h2>Calculate a delivery fee</h2>
+          <form id="quote-form">
+            <label for="backend">Backend dependency</label>
+            <select id="backend">
+              <option value="http">HTTP pricing service</option>
+              <option value="postgres">PostgreSQL zone lookup</option>
+            </select>
+            <label for="zone">Delivery zone (database flow)</label>
+            <select id="zone">
+              <option value="LOCAL">Local — $2/km</option>
+              <option value="EXPRESS">Express — $4/km</option>
+            </select>
+            <label for="distance">Distance in kilometres</label
+            ><input
+              id="distance"
+              type="number"
+              value="10"
+              min=".1"
+              max="1000"
+              step=".1"
+              required
+            /><button class="primary" type="submit">Calculate delivery fee</button>
+          </form>
+          <p class="note">
+            10 km costs $20 locally, or $40 in the database Express zone. The initial
+            backend has an intentional wrong-field bug.
+          </p>
+          <div class="actions">
+            <button id="invalid" type="button">Test invalid input (400)</button
+            ><button id="health" type="button">Check backend (200)</button>
+          </div>
+        </section>
+        <section aria-live="polite">
+          <h2>API response <span id="status">Not sent</span></h2>
+          <p id="explanation">Submit a request to see the actual backend response.</p>
+          <pre id="result">No request yet.</pre>
+          <small id="request-id"></small>
+        </section>
+      </div>
+      <section>
+        <h2>Capture → Replay → Fix → Verify</h2>
+        <ol>
+          <li>
+            Click <strong>Calculate delivery fee</strong>. Initially it returns
+            <strong>500</strong>. TimeMachine captures the distance and the pricing
+            service response.
+          </li>
+          <li>
+            Open TimeMachine, select the latest
+            <strong>delivery-api occurrence for your selected API</strong> occurrence and
+            click <strong>Replay failure</strong>. The captured build should return 500
+            again.
+          </li>
+          <li>
+            Fix this line in <code>examples/express-delivery/src/app.js</code>:
+            <pre>const RATE_FIELD = 'rate';</pre>
+            Change it to:
+            <pre>const RATE_FIELD = 'ratePerKm';</pre>
+            For the PostgreSQL flow, edit
+            <code>examples/express-delivery/src/database-app.js</code> instead:
+            <pre>const DATABASE_RATE_FIELD = 'rate_per_km';</pre>
+          </li>
+          <li>
+            Stop <code>pnpm demo</code> with Ctrl+C, then run
+            <code>pnpm demo</code> again. It rebuilds and registers the updated app
+            automatically. Reload this page.
+          </li>
+          <li>
+            Open the <strong>same original incident</strong> and choose
+            <strong>Verify application fix</strong>. It should return
+            <strong>200</strong> and verify the correct fee using the saved distance and
+            rate.
+          </li>
+        </ol>
+        <p class="note">
+          Invalid input (400) is expected and should not create an incident. Replay runs
+          inside a separate sandbox; it does not call this running pricing service. This
+          is a local test backend, with no payments or customer data.
+        </p>
+      </section>
+      <section>
+        <h2>Registration transaction test</h2>
+        <p>
+          Create a synthetic test user and an audit entry in one transaction. The initial
+          audit-column bug causes HTTP 500 and rolls back the user insertion.
+        </p>
+        <button id="register" type="button">Register a test user</button>
+        <p>
+          Replay uses a fresh PostgreSQL database inside the sandbox, with empty synthetic
+          tables. It does not copy or connect to this running database.
+        </p>
+        <ol>
+          <li>
+            Click Register a test user, then open the new POST /users/register occurrence
+            in TimeMachine.
+          </li>
+          <li>Replay the captured build: it should fail again.</li>
+          <li>
+            In <code>examples/express-delivery/src/registration-app.js</code>, change
+            <code>AUDIT_COLUMN = 'acton'</code> to <code>AUDIT_COLUMN = 'action'</code>.
+          </li>
+          <li>
+            Stop and rerun <code>pnpm demo</code>. Verify the same original occurrence:
+            HTTP 201, exactly one user and one linked audit entry must pass the business
+            checks.
+          </li>
+        </ol>
+      </section>
+      <section>
+        <h2>Your recent requests</h2>
+        <ol id="history">
+          <li>No requests yet.</li>
+        </ol>
+      </section>
+    </main>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let active = false,
+        count = 0;
+      async function info() {
+        try {
+          const response = await fetch('/api/demo-info', {
+            credentials: 'omit',
+            referrerPolicy: 'no-referrer',
+          });
+          const data = await response.json();
+          $('revision').textContent =
+            ($('backend').value === 'postgres'
+              ? data.databaseRevision
+              : data.revision) === 'fixed'
+              ? 'Fixed build — quotes should succeed'
+              : 'Buggy build — quotes will fail';
+          const url = new URL(data.dashboardOrigin);
+          if (
+            url.protocol === 'http:' &&
+            ['127.0.0.1', 'localhost'].includes(url.hostname)
+          ) {
+            url.searchParams.set('service', 'delivery-api');
+            $('dashboard').href = url.href;
+          }
+        } catch {
+          $('revision').textContent = 'Backend unavailable';
+        }
+      }
+      async function send(path, body) {
+        if (active) return;
+        active = true;
+        document.querySelectorAll('button').forEach((button) => (button.disabled = true));
+        $('status').textContent = 'Sending…';
+        $('status').className = '';
+        $('request-id').textContent = '';
+        try {
+          const response = await fetch(path, {
+            method: body === undefined ? 'GET' : 'POST',
+            credentials: 'omit',
+            referrerPolicy: 'no-referrer',
+            ...(body === undefined
+              ? {}
+              : {
+                  headers: { 'content-type': 'application/json' },
+                  body: JSON.stringify(body),
+                }),
+          });
+          const text = await response.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch {
+            data = text;
+          }
+          $('status').textContent = 'HTTP ' + response.status;
+          $('status').className = response.ok ? 'success' : 'error';
+          $('result').textContent = JSON.stringify(data, null, 2);
+          $('request-id').textContent =
+            'Request ID: ' + (response.headers.get('x-request-id') || 'not available');
+          $('explanation').textContent =
+            response.status >= 500
+              ? 'Unexpected backend failure. Open TimeMachine after a moment to investigate and replay it.'
+              : response.status === 400
+                ? 'Expected validation rejection. This should not create an incident.'
+                : path === '/health'
+                  ? 'The backend is reachable. This should not create an incident.'
+                  : path === '/users/register'
+                    ? 'Synthetic user registered. Both database writes committed.'
+                    : 'Quote created successfully. Compare the fee against the selected zone rate and distance.';
+          if (count === 0) $('history').replaceChildren();
+          const item = document.createElement('li');
+          item.textContent =
+            new Date().toLocaleTimeString() +
+            ' · ' +
+            (body === undefined ? 'GET' : 'POST') +
+            ' ' +
+            path +
+            ' → ' +
+            response.status +
+            (body?.distanceKm === undefined ? '' : ' · ' + body.distanceKm + ' km');
+          $('history').prepend(item);
+          count++;
+          while ($('history').children.length > 20) $('history').lastChild.remove();
+        } catch {
+          $('status').textContent = 'Connection failed';
+          $('status').className = 'error';
+          $('result').textContent = 'Check that pnpm demo is running.';
+          $('explanation').textContent = 'No HTTP response was received.';
+        } finally {
+          active = false;
+          document
+            .querySelectorAll('button')
+            .forEach((button) => (button.disabled = false));
+        }
+      }
+      $('quote-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        void send(
+          $('backend').value === 'postgres' ? '/delivery/zone-quote' : '/delivery/quote',
+          {
+            distanceKm: Number($('distance').value),
+            ...($('backend').value === 'postgres' ? { zoneCode: $('zone').value } : {}),
+          },
+        );
+      });
+      $('invalid').addEventListener(
+        'click',
+        () =>
+          void send(
+            $('backend').value === 'postgres'
+              ? '/delivery/zone-quote'
+              : '/delivery/quote',
+            {
+              distanceKm: 0,
+              ...($('backend').value === 'postgres' ? { zoneCode: $('zone').value } : {}),
+            },
+          ),
+      );
+      $('register').addEventListener(
+        'click',
+        () =>
+          void send('/users/register', {
+            handle: 'tm-test-' + crypto.randomUUID().slice(0, 12),
+          }),
+      );
+      $('health').addEventListener('click', () => void send('/health'));
+      $('backend').addEventListener('change', () => void info());
+      void info();
+    </script>
+  </body>
+</html>

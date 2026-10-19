@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TimeMachine — Workflow</title>
+    <meta
+      name="description"
+      content="Explore TimeMachine's Express workflow: capture, investigation, isolated replay, a code fix, and verification."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17251d;
+        --muted: #6e7972;
+        --line: #e2e8e3;
+        --green: #246344;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: white;
+        color: var(--ink);
+        font:
+          16px/1.65 system-ui,
+          sans-serif;
+      }
+      main,
+      nav {
+        max-width: 1120px;
+        margin: auto;
+        padding: 24px;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 1px solid var(--line);
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 4px;
+      }
+      h1 {
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1.12;
+        letter-spacing: -0.04em;
+        margin: 30px 0 14px;
+      }
+      h2 {
+        font-size: 26px;
+        letter-spacing: -0.03em;
+      }
+      p {
+        color: var(--muted);
+        max-width: 800px;
+      }
+      figure {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        margin: 30px 0 12px;
+        background: #fff;
+      }
+      section {
+        border-top: 1px solid var(--line);
+        margin-top: 36px;
+        padding: 20px 0;
+      }
+      ol {
+        padding-left: 24px;
+      }
+      li {
+        padding: 8px 0;
+      }
+      small {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      code {
+        font-size: 13px;
+      }
+      :focus-visible {
+        outline: 2px solid var(--green);
+        outline-offset: 4px;
+      }
+      @media (max-width: 600px) {
+        main,
+        nav {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <strong>TimeMachine</strong
+      ><a href="https://github.com/Jago-Intelligence/TImemachine">Source on GitHub ↗</a>
+    </nav>
+    <main>
+      <h1>From a failed request<br />to a verified fix.</h1>
+      <p>
+        A visual guide to capturing a failed request and verifying a developer-written
+        fix. Synthetic data and no live backend access.
+      </p>
+      <figure>
+        <img
+          src="media/timemachine-workflow.png"
+          alt="From failure to verified fix: an Express API fails, evidence is captured and investigated, the original build replays, a developer fixes a missing field, and the updated build passes verification"
+          style="width: 100%; height: auto; display: block"
+        />
+        <figcaption>
+          Conceptual workflow illustration with synthetic data, distinct from the
+          dashboard.
+        </figcaption>
+      </figure>
+      <a href="media/timemachine-workflow.png">Open the full-size illustration →</a>
+      <section>
+        <h2>The workflow</h2>
+        <ol>
+          <li>
+            <strong>The request.</strong> A client sends
+            <code>POST /api/convert</code> with amount 100 to an Express backend.
+          </li>
+          <li>
+            <strong>The failure.</strong> The pricing service returns rate 0.9 and
+            currency EUR. The application reads a different field and throws a TypeError,
+            returning HTTP 500.
+          </li>
+          <li>
+            <strong>The evidence.</strong> Follow the captured request into its approved
+            input, dependency response and source location.
+          </li>
+          <li>
+            <strong>The correction.</strong> Source evidence reveals the wrong field
+            access. The developer changes <code>pricing.ratePerUnit.toFixed(2)</code> to
+            <code>pricing.rate.toFixed(2)</code>.
+          </li>
+          <li>
+            <strong>The replay comparison.</strong> The original captured build reproduces
+            HTTP 500 with controlled dependencies in isolation. The changed build returns
+            HTTP 200 and a converted amount of 90 EUR; its business assertions pass.
+          </li>
+          <li>
+            <strong>The whole story.</strong> The connected flow: capture, reproduce and
+            verify. Historical builds, team access and alerts support continued
+            investigation.
+          </li>
+        </ol>
+      </section>
+      <section>
+        <h2>Try TimeMachine in your backend.</h2>
+        <p>
+          Open source, self hosted, and in active development. There is no public npm
+          release yet.
+        </p>
+        <a
+          href="https://github.com/Jago-Intelligence/TImemachine/blob/main/docs/integrations/README.md"
+          >Installation →</a
+        >
+        ·
+        <a
+          href="https://github.com/Jago-Intelligence/TImemachine/blob/main/docs/express-setup.md"
+          >Express integration →</a
+        >
+      </section>
+    </main>
+  </body>
+</html>

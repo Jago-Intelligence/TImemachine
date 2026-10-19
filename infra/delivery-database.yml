@@ -1,0 +1,20 @@
+services:
+  delivery-db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: delivery
+      POSTGRES_DB: delivery
+      POSTGRES_PASSWORD: ${DELIVERY_POSTGRES_PASSWORD:?Run pnpm demo first}
+    ports:
+      - '127.0.0.1:${DELIVERY_POSTGRES_PORT:-55435}:5432'
+    volumes:
+      - delivery-data:/var/lib/postgresql/data
+      - ./delivery-database.sql:/docker-entrypoint-initdb.d/001-zones.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U delivery -d delivery']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  delivery-data:

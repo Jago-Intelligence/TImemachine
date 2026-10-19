@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791843542133,
+      "tag": "0000_incident_storage",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791844998618,
+      "tag": "0001_incident_list_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791849377204,
+      "tag": "0002_replay_fixtures_and_runs",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791910320333,
+      "tag": "0003_group_incidents_into_issues",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791936113784,
+      "tag": "0004_issue_resolution",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791999090393,
+      "tag": "0005_alert_outbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792020000000,
+      "tag": "0006_notification_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792100000000,
+      "tag": "0007_workspace_accounts",
+      "breakpoints": true
+    }
+  ]
+}

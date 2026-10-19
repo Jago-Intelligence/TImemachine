@@ -1,0 +1,16 @@
+{
+  "name": "@timemachine/example-express-delivery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node --check src/app.js && node --check src/main.js && node --check src/replay-runner.js && node --check src/database-app.js && node --check src/registration-app.js",
+    "typecheck": "node --check src/app.js && node --check src/main.js && node --check src/replay-runner.js && node --check src/database-app.js && node --check src/registration-app.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@timemachine/replay": "workspace:*",
+    "express": "5.3.0",
+    "pg": "8.23.1"
+  }
+}

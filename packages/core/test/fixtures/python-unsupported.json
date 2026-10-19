@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "8b372947-b5ba-4b5f-8b84-3e53e686f014",
+  "occurredAt": "2026-10-12T20:00:00.000Z",
+  "capturedAt": "2026-10-12T20:00:00.050Z",
+  "service": {
+    "name": "example-orders",
+    "version": "0.1.0",
+    "environment": "test"
+  },
+  "runtime": {
+    "language": "python",
+    "name": "cpython",
+    "version": "3.13.0"
+  },
+  "adapter": {
+    "name": "example-python-adapter",
+    "version": "0.1.0",
+    "capabilities": {
+      "capture": ["errors"],
+      "replay": []
+    }
+  },
+  "correlation": {
+    "requestId": "req-example-1",
+    "correlationId": "corr-example-1"
+  },
+  "failure": {
+    "source": "unhandled-error",
+    "name": "ExampleFailure",
+    "summary": "A synthetic application failure occurred.",
+    "frames": []
+  },
+  "timeline": [
+    {
+      "id": "event-1",
+      "offsetMs": 0,
+      "type": "error",
+      "code": "EXAMPLE_FAILURE"
+    }
+  ],
+  "replay": {
+    "status": "unsupported",
+    "reason": "adapter-unsupported"
+  }
+}

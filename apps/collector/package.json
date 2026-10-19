@@ -1,0 +1,30 @@
+{
+  "name": "@timemachine/collector",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "11.2.1",
+    "@timemachine/config": "workspace:*",
+    "@timemachine/core": "workspace:*",
+    "@timemachine/logger": "workspace:*",
+    "@timemachine/replay": "workspace:*",
+    "@timemachine/storage": "workspace:*",
+    "fastify": "5.12.5",
+    "nodemailer": "10.1.0",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "8.0.2"
+  },
+  "files": [
+    "dist"
+  ]
+}

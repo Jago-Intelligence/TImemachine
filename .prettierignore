@@ -1,0 +1,12 @@
+node_modules
+dist
+.turbo
+coverage
+pnpm-lock.yaml
+LICENSE
+.next
+next-env.d.ts
+
+.timemachine
+.tmp
+.codex

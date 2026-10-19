@@ -1,0 +1,20 @@
+name: Bug report
+description: Report a reproducible defect.
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Sanitized reproduction
+      description: Include commands and versions. Never include credentials or production data.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Node.js, pnpm, operating system and TimeMachine revision
